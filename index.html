@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Campus Food Menu</title>
+    <style>
+        /* Simple layout cleanups */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        /* Clean wide text field */
+        #foodSearchInput {
+            font-size: 16px;
+            padding: 8px;
+            width: 100%;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+        }
+
+        /* Border-free minimal table style */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 18px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #ddd; /* Only a clean horizontal line */
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Campus Food Menu</h1>
+
+        <input type="text" id="foodSearchInput" onkeyup="searchTable()" placeholder="Search ID, Food, or Price...">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Food</th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+            <tbody id="foodtable"></tbody>
+        </table>
+    </div>
+
+    <script>
+        async function LoadFood(){
+
+           
+            const response = await fetch("/api/foods");
+            const students = await response.json();
+            const table = document.getElementById("foodtable");
+
+            table.innerHTML = "";
+
+            students.forEach(food =>{
+                const row = document.createElement("tr");
+
+                const idCell = document.createElement("td");
+                idCell.textContent = food.id;
+                const nameCell = document.createElement("td");
+                nameCell.textContent = food.name;
+                const priceCell = document.createElement("td");
+                priceCell.textContent = food.price;    
+                row.appendChild(idCell);
+                row.appendChild(nameCell);
+                row.appendChild(priceCell);
+                table.appendChild(row);
+
+
+            });
+        }
+
+         function searchTable() {
+            const filter = document.getElementById("foodSearchInput").value.toLowerCase();
+            
+            document.querySelectorAll("#foodtable tr").forEach(row => {
+           
+                const matches = row.textContent.toLowerCase().includes(filter);
+                
+                row.style.display = matches ? "" : "none";
+            });
+    }
+
+        window.onload = LoadFood;
+    </script>
+
+
+</body>
+</html>
